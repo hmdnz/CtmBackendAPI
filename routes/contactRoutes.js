@@ -5,9 +5,7 @@ const router = express.Router();
 
 // The routes for CRUD operations below:
 // GET ALL
-router.route("/").get((req, res) => {
-  res.status(200).json({ message: "Get all contacts" });
-});
+router.route("/").get();
 
 // GET Single/ID
 
