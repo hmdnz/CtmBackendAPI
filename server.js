@@ -6,9 +6,8 @@ const app = express()
 
 const PORT =process.env.PORT || 5000
 
-app.get('/api/contacts',(req, res)=>{
-res.json({"message":"Get all contacts"})
-})
+// Middleware
+app.use('/api/contacts/', require('./routes/contactRoutes'))
 
 app.listen(PORT, () =>{
 console.log(`Server running on port ${PORT}`)
