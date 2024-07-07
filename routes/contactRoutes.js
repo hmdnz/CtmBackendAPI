@@ -1,31 +1,24 @@
 const express = require("express");
 const router = express.Router();
+const {getContacts, createContact,getContact,updateContact,deleteteContact} = require('../controller/contactController')
 
 // Calling a route with @router.route
 
 // The routes for CRUD operations below:
 // GET ALL
-router.route("/").get();
+router.route("/").get(getContact);
 
 // GET Single/ID
 
-router.route("/:id").get((req, res) => {
-  res.status(200).json({ message: `Get contact for ${req.params.id}` });
-});
+router.route("/:id").post(createContact)
 
 // POST
-router.route("/:id").post((req, res) => {
-  res.status(201).json({ message: `Create Contact for ${req.params.id}` });
-});
+router.route("/:id").post();
 
 // PUT
-router.route("/").put((req, res) => {
-  res.status(200).json({ message: `Update Contact for ${req.params.id}` });
-});
+router.route("/").put(updateContact)
 
 // DELETE
-router.route("/").delete((req, res) => {
-  res.status(200).json({ message: `Delete Contact for ${req.params.id}` });
-});
+router.route("/").delete(deleteteContact);
 
 module.exports = router;
