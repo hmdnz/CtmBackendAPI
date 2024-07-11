@@ -1,6 +1,13 @@
 const express = require("express")
-const dotenv =require("dotenv").config
-const connectDb=require("./config/dbConnection")
+const connectDb = require("./config/dbConnection")
+const dotenv = require("dotenv")
+
+console.log("Connection String: ", process.env.CONNECTION_STRING);
+// Load environment variables
+dotenv.config();
+
+connectDb()
+
 const app = express()
 
 

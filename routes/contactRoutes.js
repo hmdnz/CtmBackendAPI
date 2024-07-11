@@ -5,35 +5,13 @@ const {
   createContact,
   getContact,
   updateContact,
-  deleteteContact,
+  deleteContact,
 } = require("../controller/contactController");
 
-// Calling a route with @router.route
+// Route to get all contacts and create a new contact
+router.route("/").get(getContacts).post(createContact);
 
-// The routes for CRUD operations below:
-// GET ALL
-// router.route("/").get(getContacts);
-
-// // GET Single/ID
-
-// router.route("/:id").get(getContact);
-
-// // POST
-// router.route("/:id").post(createContact);
-
-// // PUT
-// router.route("/:id").put(updateContact);
-
-// // DELETE
-// router.route("/:id").delete(deleteteContact);
-
-
-// similar routes can be grouped like so:
-router.route("/").get(getContacts);
-
-// GET Single/ID // POST // PUT// DELETE
-
-router.route("/:id").get(getContact).post(createContact).put(updateContact).delete(deleteteContact);
-
+// Route to get, update, and delete a specific contact by ID
+router.route("/:id").get(getContact).put(updateContact).delete(deleteContact);
 
 module.exports = router;

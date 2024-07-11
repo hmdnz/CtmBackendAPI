@@ -1,43 +1,72 @@
-//@desc get all contacts
-//@route GET api/contacts
-//@access public
+const mongoose = require("mongoose");
+const Contact = require("../models/contactModel");
 
-const getContacts = (req, res) => {
-  res.status(200).json({ message: "Get all contacts" });
+// @desc Get all contacts
+// @route GET /api/contacts
+// @access public
+const getContacts = async (req, res) => {
+  const contacts = await Contact.find();
+  res.status(200).json(contacts);
 };
 
-//@desc get  a contact
-//@route GET api/contacts:id
-//@access public
-
-const getContact = (req, res) => {
-  res.status(200).json({ message: `Get contact for ${req.params.id}` });
+// @desc Get a contact
+// @route GET /api/contacts/:id
+// @access public
+const getContact = async (req, res) => {
+  const contact = await Contact.findById(req.params.id);
+  if (!contact) {
+    return res.status(404).json({ message: "Contact not found" });
+  }
+  res.status(200).json(contact);
 };
 
-//@desc post a contact
-//@route POST api/contacts
-//@access public
-const createContact = (req, res) => {
+// @desc Create a contact
+// @route POST /api/contacts
+// @access public
+const createContact = async (req, res) => {
   console.log("The request body is: ", req.body);
   const { name, email, phone } = req.body;
   if (!name || !email || !phone) {
     return res.status(400).json({ message: "All fields are mandatory" });
   }
-  res.status(201).json({ message: `Create Contact` });
+
+  let uniqueId;
+  let isUnique = false;
+  while (!isUnique) {
+    uniqueId = new mongoose.Types.ObjectId().toString().slice(0, 6);
+    const existingContact = await Contact.findOne({ customId: uniqueId });
+    if (!existingContact) {
+      isUnique = true;
+    }
+  }
+
+  const contact = await Contact.create({ name, email, phone, customId: uniqueId });
+  res.status(201).json(contact);
 };
 
-//@desc Update a contact
-//@route UODATE api/contacts
-//@access public
-const updateContact = (req, res) => {
-  res.status(200).json({ message: `Update Contact for ${req.params.id}` });
+// @desc Update a contact
+// @route PUT /api/contacts/:id
+// @access public
+const updateContact = async (req, res) => {
+  const contact = await Contact.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+  if (!contact) {
+    return res.status(404).json({ message: "Contact not found" });
+  }
+  res.status(200).json(contact);
 };
 
-//@desc delete a contact
-//@route DELETE api/contacts
-//@access public
-const deleteteContact = (req, res) => {
-  res.status(200).json({ message: `Delete Contact for ${req.params.id}` });
+// @desc Delete a contact
+// @route DELETE /api/contacts/:id
+// @access public
+const deleteContact = async (req, res) => {
+  const contact = await Contact.findByIdAndDelete(req.params.id);
+  if (!contact) {
+    return res.status(404).json({ message: "Contact not found" });
+  }
+  res.status(200).json({ message: `Deleted contact with id ${req.params.id}` });
 };
 
 module.exports = {
@@ -45,5 +74,5 @@ module.exports = {
   createContact,
   getContact,
   updateContact,
-  deleteteContact,
+  deleteContact,
 };
