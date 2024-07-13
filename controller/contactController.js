@@ -30,17 +30,7 @@ const createContact = async (req, res) => {
     return res.status(400).json({ message: "All fields are mandatory" });
   }
 
-  let uniqueId;
-  let isUnique = false;
-  while (!isUnique) {
-    uniqueId = new mongoose.Types.ObjectId().toString().slice(0, 6);
-    const existingContact = await Contact.findOne({ customId: uniqueId });
-    if (!existingContact) {
-      isUnique = true;
-    }
-  }
-
-  const contact = await Contact.create({ name, email, phone, customId: uniqueId });
+  const contact = await Contact.create({ name, email, phone });
   res.status(201).json(contact);
 };
 
