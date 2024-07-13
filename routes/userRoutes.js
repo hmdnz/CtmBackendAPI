@@ -1,13 +1,12 @@
 const express = require("express");
+const { registerUser } = require("../controller/userController");
+
+
 const router = express.Router();
-const {
-  
-} = require("../controller/contactController");
+
 
 // User Registeration
-router.post("/register", (req,res)=>{
-res.json({message:"Register the user"})
-})
+router.post("/register", registerUser  )
 
 // User Login
 router.post("/login", (req,res)=>{
