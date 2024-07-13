@@ -23,15 +23,42 @@ const getContact = async (req, res) => {
 // @desc Create a contact
 // @route POST /api/contacts
 // @access public
-const createContact = async (req, res) => {
+// SINGLE ENTRY
+// const createContact = async (req, res) => {
+//   console.log("The request body is: ", req.body);
+//   const { name, email, phone } = req.body;
+//   if (!name || !email || !phone) {
+//     return res.status(400).json({ message: "All fields are mandatory" });
+//   }
+
+//   const contact = await Contact.create({ name, email, phone });
+//   res.status(201).json(contact);
+// };
+
+
+// BATCH AND SINGLE ENTRY
+const createContacts = async (req, res) => {
   console.log("The request body is: ", req.body);
-  const { name, email, phone } = req.body;
-  if (!name || !email || !phone) {
-    return res.status(400).json({ message: "All fields are mandatory" });
+
+  // Check if req.body is an array or a single object
+  const contacts = Array.isArray(req.body) ? req.body : [req.body];
+
+  // Check if all objects in the array have name, email, and phone
+  for (const contact of contacts) {
+    const { name, email, phone } = contact;
+    if (!name || !email || !phone) {
+      return res.status(400).json({ message: "All fields are mandatory" });
+    }
   }
 
-  const contact = await Contact.create({ name, email, phone });
-  res.status(201).json(contact);
+  // Create contacts in bulk if it's an array, otherwise create a single contact
+  if (Array.isArray(req.body)) {
+    const createdContacts = await Contact.insertMany(contacts);
+    res.status(201).json(createdContacts);
+  } else {
+    const createdContact = await Contact.create(req.body);
+    res.status(201).json(createdContact);
+  }
 };
 
 // @desc Update a contact
@@ -61,7 +88,8 @@ const deleteContact = async (req, res) => {
 
 module.exports = {
   getContacts,
-  createContact,
+  // createContact,
+  createContacts,
   getContact,
   updateContact,
   deleteContact,
