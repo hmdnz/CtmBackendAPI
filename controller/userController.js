@@ -19,7 +19,18 @@ const registerUser = async (req,res)=>{
 //Hash password
 const hashedPassword=await bcrypt.hash(password, 10)
 console.log("Hashed password ", hashedPassword)
-    res.json({message:"Register the user"})
+const user =await User.create({
+    username,
+    email,
+    password:hashedPassword
+})
+
+console.log(`User Created ${user}`)
+if(user){
+    res.status(201).json({_id:user.id, email:user.email})
+}else{
+    res.status(400)/json({message:"User data is not valid!"})
+}
     }  
 
 // @desc Login a user
